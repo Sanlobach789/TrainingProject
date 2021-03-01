@@ -15,7 +15,7 @@ def product(request):
 
     content = {
         'title': 'GeekShop - Категории',
-        'categories': ProductCategory,
-        'products': Product,
+        'categories': ProductCategory.objects.filter(is_active=True),
+        'products': Product.objects.filter(is_active=True),
     }
     return render(request, 'mainapp/products.html', content)
