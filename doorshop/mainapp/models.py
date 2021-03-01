@@ -52,3 +52,5 @@ class AttributeValue(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     attribute_id = models.ForeignKey(ProductAttributes, on_delete=models.CASCADE)
     value = models.CharField(max_length=40, blank=True)
+
+
