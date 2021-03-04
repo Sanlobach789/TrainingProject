@@ -25,6 +25,13 @@ class ProductAttributes(models.Model):
     category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     data_type = models.CharField(max_length=15, choices=DataTypes.choices, default=DataTypes.TEXT)
 
+    def __str__(self):
+        return f'{self.name} | {self.category_id}'
+
+    def get_category_attributes(product):
+        attributes = ProductAttributes.objects.filter(category_id=product.category)
+        return attributes
+
 
 class ProductMeasure(models.Model):
     name = models.CharField(max_length=10)
@@ -35,7 +42,7 @@ class ProductMeasure(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=256)
-    image = models.ImageField(upload_to='img/products', blank=True)
+    image = models.ImageField(upload_to='img/products', blank=True, default='img/product-img/product_default.jpg')
     description = models.TextField(blank=True)
     short_desc = models.CharField(max_length=64, blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
@@ -53,4 +60,5 @@ class AttributeValue(models.Model):
     attribute_id = models.ForeignKey(ProductAttributes, on_delete=models.CASCADE)
     value = models.CharField(max_length=40, blank=True)
 
-
+    def __str__(self):
+        return f'{self.attribute_id}'

@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -10,7 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', mainapp_views.main, name='main'),
     path('products/', include('mainapp.urls', namespace='products')),
-
+    path('auth/', include('authapp.urls', namespace='auth')),
+    path('admin-staff/', include('adminapp.urls', namespace='admin_staff'))
 ]
 
 if settings.DEBUG:
