@@ -16,4 +16,4 @@ class ProductsAdmin(admin.ModelAdmin):
 admin.site.register(ProductCategory)
 admin.site.register(ProductMeasure)
 admin.site.register(ProductAttributes)
-admin.site.register(AttributeValue)
+# admin.site.register(AttributeValue)

@@ -1,4 +1,5 @@
 {% extends 'mainapp/base.html' %}
+
 {% block title %}
 <title>DOORSHOP-каталог</title>
 {% endblock %}
@@ -84,18 +85,20 @@
             <!-- ##### Single Widget ##### -->
             <div class="widget catagory mb-50">
                 <!-- Widget Title -->
-                <h6 class="widget-title mb-30">Catagories</h6>
+                <h6 class="widget-title mb-30">Categories</h6>
 
                 <!--  Catagories  -->
                 <div class="catagories-menu">
                     <ul>
                         <li class="active"><a href="#">Chairs</a></li>
-                        <li><a href="#">Beds</a></li>
-                        <li><a href="#">Accesories</a></li>
-                        <li><a href="#">Furniture</a></li>
-                        <li><a href="#">Home Deco</a></li>
-                        <li><a href="#">Dressings</a></li>
-                        <li><a href="#">Tables</a></li>
+                        {% for category in categories %}
+                            <li><a href="#">{{ category.name }}</a></li>
+                        {% endfor %}
+{#                        <li><a href="#">Accesories</a></li>#}
+{#                        <li><a href="#">Furniture</a></li>#}
+{#                        <li><a href="#">Home Deco</a></li>#}
+{#                        <li><a href="#">Dressings</a></li>#}
+{#                        <li><a href="#">Tables</a></li>#}
                     </ul>
                 </div>
             </div>
@@ -214,15 +217,15 @@
                 </div>
 
                 <div class="row">
-
-                    <!-- Single Product Area -->
-                    <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                    {% for product in products %}
+                        <!-- Single Product Area -->
+                        <div class="col-12 col-sm-6 col-md-12 col-xl-6">
                         <div class="single-product-wrapper">
                             <!-- Product Image -->
                             <div class="product-img">
-                                <img src="media/img/product-img/product1.jpg" alt="">
+                                <img src="/media/{{ product.image }}" alt="/media/img/products/product_default.jpg">
                                 <!-- Hover Thumb -->
-                                <img class="hover-img" src="media/img/product-img/product2.jpg" alt="">
+                                <img class="hover-img" src="/media/{{ product.image }}" alt="">
                             </div>
 
                             <!-- Product Description -->
@@ -230,9 +233,9 @@
                                 <!-- Product Meta Data -->
                                 <div class="product-meta-data">
                                     <div class="line"></div>
-                                    <p class="product-price">$180</p>
+                                    <p class="product-price">{{ product.price }}</p>
                                     <a href="product-details.html">
-                                        <h6>Modern Chair</h6>
+                                        <h6>{{ product.name }}</h6>
                                     </a>
                                 </div>
                                 <!-- Ratings & Cart -->
@@ -245,14 +248,14 @@
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </div>
                                     <div class="cart">
-                                        <a href="cart.html" data-toggle="tooltip" data-placement="left" title="Add to Cart"><img src="img/core-img/cart.png" alt=""></a>
+                                        <a href="cart.html" data-toggle="tooltip" data-placement="left" title="Add to Cart"><img src="/media/img/core-img/cart.png" alt=""></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Single Product Area -->
+                    {% endfor %}
+                    {% comment %}<!-- Single Product Area -->
                     <div class="col-12 col-sm-6 col-md-12 col-xl-6">
                         <div class="single-product-wrapper">
                             <!-- Product Image -->
@@ -435,7 +438,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>{% endcomment %}
                 </div>
 
                 <div class="row">
