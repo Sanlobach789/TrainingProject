@@ -11,7 +11,7 @@ def main(request):
     return render(request, 'mainapp/index.html', content)
 
 
-def product(request):
+def products(request):
 
     content = {
         'title': 'GeekShop - Категории',
