@@ -7,9 +7,11 @@ from mainapp import views as mainapp_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mainapp.urls', namespace='products')),
+    path('products/', include('mainapp.urls', namespace='products')),
+    path('', mainapp_views.main, name='index'),
     path('auth/', include('authapp.urls', namespace='auth')),
-    path('admin-staff/', include('adminapp.urls', namespace='admin_staff'))
+    path('admin-staff/', include('adminapp.urls', namespace='admin_staff')),
+    path('basket/', include('basketapp.urls', namespace='basket')),
 ]
 
 if settings.DEBUG:

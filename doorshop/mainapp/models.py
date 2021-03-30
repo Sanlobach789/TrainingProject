@@ -26,11 +26,7 @@ class ProductAttributes(models.Model):
     data_type = models.CharField(max_length=15, choices=DataTypes.choices, default=DataTypes.TEXT)
 
     def __str__(self):
-        return f'{self.name} | {self.category_id}'
-
-    def get_category_attributes(product):
-        attributes = ProductAttributes.objects.filter(category_id=product.category)
-        return attributes
+        return f'{self.name}'
 
 
 class ProductMeasure(models.Model):
@@ -41,6 +37,7 @@ class ProductMeasure(models.Model):
 
 
 class Product(models.Model):
+
     name = models.CharField(max_length=256)
     image = models.ImageField(upload_to='img/products', blank=True, default='img/product-img/product_default.jpg')
     description = models.TextField(blank=True)
@@ -52,7 +49,7 @@ class Product(models.Model):
     is_active = models.BooleanField(verbose_name='active', default=True)
 
     def __str__(self):
-        return f'{self.name} | {self.category.name}'
+        return f'{self.name}'
 
 
 class AttributeValue(models.Model):
@@ -62,3 +59,5 @@ class AttributeValue(models.Model):
 
     def __str__(self):
         return f'{self.attribute_id}'
+
+

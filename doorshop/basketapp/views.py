@@ -1,4 +1,4 @@
-from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -7,11 +7,19 @@ from mainapp.models import Product
 from basketapp.models import Basket
 
 
+def basket_main(request):
+    basket = Basket.objects.filter(user=request.user)
+    content = {
+        'basket': basket
+    }
+    return render(request, 'basketapp/cart.html', content)
+
+
 @login_required
 def basket_add(request, id=None):
     product = get_object_or_404(Product, id=id)
     baskets = Basket.objects.filter(user=request.user, product=product)
-
+    print(str(baskets) + ' WORK')
     if not baskets.exists():
         basket = Basket(user=request.user, product=product)
         basket.quantity += 1
