@@ -1,15 +1,21 @@
 from django.contrib import admin
 
-from .models import ProductCategory, Product, ProductMeasure, ProductAttributes, AttributeValue
+from .models import ProductCategory, Product, ProductMeasure, ProductAttributes, AttributeValue, ProductImage
 
 
 class AttributesInline(admin.StackedInline):
     model = AttributeValue
 
+    extra = 1
+
+
+class ProductImageInLine(admin.StackedInline):
+    model = ProductImage
+
 
 @admin.register(Product)
 class ProductsAdmin(admin.ModelAdmin):
-    inlines = [AttributesInline, ]
+    inlines = [AttributesInline, ProductImageInLine, ]
 
 
 # admin.site.register(Product)

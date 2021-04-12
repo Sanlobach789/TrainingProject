@@ -21,11 +21,11 @@ def products(request):
 
 def product_detail(request, product_id):
     attribute_values = AttributeValue.objects.filter(product_id=product_id)
-    # attribute_name = ProductAttributes.objects.filter(name=attribute_values.attribute_id)
+    images = Product.objects.get(id=product_id).images.all()
     content = {
         'product': Product.objects.get(id=product_id),
         'attributes': attribute_values,
-        # 'attribute_name': attribute_name,
+        'product_images': images,
     }
     return render(request, 'mainapp/product-details.html', content)
 
@@ -56,10 +56,20 @@ def get_category_attributes(category_id=None):
 def category_products(request, category_id=None):
     products_list = Product.objects.filter(is_active=True, category=category_id)
     filter_values = get_category_attributes(category_id)
+    min_price_product = products_list.order_by('price')[0],
+    max_price_product = products_list.order_by('-price')[0],
+    min = float(min_price_product[0].get_price())
+    max = float(max_price_product[0].get_price())
+    price_filter = {
+        "min": int(round(min)),
+        "max": int(round(max)),
+    }
     content = {
         'title': ProductCategory.objects.get(id=category_id).name,
         'categories': ProductCategory.objects.filter(is_active=True),
         'products': products_list,
+        'price_filter': price_filter,
         'filters': filter_values,
     }
+
     return render(request, 'mainapp/products.html', content)

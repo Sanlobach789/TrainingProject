@@ -1,0 +1,35 @@
+{% extends "mainapp/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="cart-table-area section-padding-100">
+        <div class="container-fluid">
+            <div class="h2">Заказ №{{ object.pk }}{{ object.created|date:"YmdHi" }}</div>
+            <hr>
+            <div class="h4">заказчик: {{ user.last_name }} {{ user.first_name }}</div>
+            <div class="h4">обновлен: {{ object.updated|date:"Y-m-d H:i:s" }}</div>
+            <div class="h4">статус: {{ object.get_status_display }}</div>
+            <hr>
+            <div class="h4">общее количество товаров:
+                <span class="order_total_quantity">{{ object.get_total_quantity }}</span>
+            </div>
+            <div class="h3">общая стоимость:
+                <span class="order_total_cost">{{ object.get_total_cost }}</span> руб
+            </div>
+        </div>
+        <div class="basket_list">
+            {% for item in object.orderitems.select_related %}
+                <div class="basket_record">
+                    <img src="{{ item.product.image }}{#|media_folder_products#}" alt="{{ item.product.short_desc }}">
+                    <span class="category_name">
+                    {{ item.product.category.name }}
+                </span>
+                    <span class="product_name">{{ item.product.name }}</span>
+                    <span class="product_price">{{ item.product.price }}&nbspруб</span>
+                    <span class="product_quantity"> x {{ item.quantity }} шт.</span>
+                    <span class="product_cost"> = {{ item.get_product_cost }}&nbspруб</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
