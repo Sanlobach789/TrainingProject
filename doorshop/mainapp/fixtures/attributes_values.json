@@ -1,0 +1,38 @@
+[
+  {
+    "pk": 4,
+    "product_id": 9,
+    "attribute_id": 5,
+    "value": "Синий"
+  },
+  {
+    "pk": 5,
+    "product_id": 1,
+    "attribute_id": 6,
+    "value": "50"
+  },
+  {
+    "pk": 6,
+    "product_id": 2,
+    "attribute_id": 6,
+    "value": "50"
+  },
+  {
+    "pk": 7,
+    "product_id": 3,
+    "attribute_id": 5,
+    "value": "Желтый"
+  },
+  {
+    "pk": 8,
+    "product_id": 3,
+    "attribute_id": 6,
+    "value": "100"
+  },
+  {
+    "pk": 9,
+    "product_id": 3,
+    "attribute_id": 5,
+    "value": "Белый"
+  }
+]

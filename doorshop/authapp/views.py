@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import render, HttpResponseRedirect
-from authapp.forms import ShopUserLoginForm
+from authapp.forms import ShopUserLoginForm, ShopUserChangePasswordForm
 from django.contrib import auth
 from django.urls import reverse
 
@@ -53,10 +53,28 @@ def edit(request):
         edit_form = ShopUserEditForm(request.POST, request.FILES, instance=request.user)
         if edit_form.is_valid():
             edit_form.save()
-            return HttpResponseRedirect(reverse('auth:edit'))
+            return HttpResponseRedirect(reverse('index'))
     else:
         edit_form = ShopUserEditForm(instance=request.user)
 
     content = {'title': title, 'edit_form': edit_form}
 
     return render(request, 'authapp/edit.html', content)
+
+
+def change_password(request):
+    title = 'смена пароля'
+
+    if request.method == 'POST':
+        password_form = ShopUserChangePasswordForm(request.POST)
+        if password_form.is_valid():
+            password_form.save()
+            return HttpResponseRedirect(reverse('auth:edit'))
+        else:
+            return password_form.error_messages
+    else:
+        password_form = ShopUserChangePasswordForm(request)
+
+    content = {'title': title, 'password_form': password_form}
+
+    return render(request, 'authapp/change-password.html', content)

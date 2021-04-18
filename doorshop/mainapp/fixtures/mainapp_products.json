@@ -1,0 +1,30 @@
+[
+  {
+    "pk": 2,
+    "name": "В квартиру",
+    "description": "",
+    "is_active": true,
+    "parent_category": 1
+  },
+  {
+    "pk": 3,
+    "name": "В дом",
+    "description": "",
+    "is_active": true,
+    "parent_category": 1
+  },
+  {
+    "pk": 5,
+    "name": "Деревянные",
+    "description": "",
+    "is_active": true,
+    "parent_category": 4
+  },
+  {
+    "pk": 6,
+    "name": "Стальные",
+    "description": "",
+    "is_active": true,
+    "parent_category": 4
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "pk": 5,
+    "name": "Цвет",
+    "category_id": 3
+  },
+  {
+    "pk": 6,
+    "name": "Ширина",
+    "category_id": 2
+  },
+  {
+    "pk": 7,
+    "name": "Высота",
+    "category_id": 3
+  },
+  {
+    "pk": 8,
+    "name": "Стиль",
+    "category_id": 3
+  },
+  {
+    "pk": 9,
+    "name": "Материал",
+    "category_id": 2
+  }
+]

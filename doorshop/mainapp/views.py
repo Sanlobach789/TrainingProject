@@ -11,6 +11,7 @@ def main(request):
 
 
 def products(request):
+
     content = {
         'title': 'Doorshop - Товары',
         'categories': ProductCategory.objects.filter(is_active=True),
@@ -56,14 +57,17 @@ def get_category_attributes(category_id=None):
 def category_products(request, category_id=None):
     products_list = Product.objects.filter(is_active=True, category=category_id)
     filter_values = get_category_attributes(category_id)
-    min_price_product = products_list.order_by('price')[0],
-    max_price_product = products_list.order_by('-price')[0],
-    min = float(min_price_product[0].get_price())
-    max = float(max_price_product[0].get_price())
-    price_filter = {
-        "min": int(round(min)),
-        "max": int(round(max)),
-    }
+    if len(products_list) > 1:
+        min_price_product = products_list.order_by('price')[0],
+        max_price_product = products_list.order_by('-price')[0],
+        min = float(min_price_product[0].get_price())
+        max = float(max_price_product[0].get_price())
+        price_filter = {
+            "min": int(round(min)),
+            "max": int(round(max)),
+        }
+    else:
+        price_filter = None
     content = {
         'title': ProductCategory.objects.get(id=category_id).name,
         'categories': ProductCategory.objects.filter(is_active=True),

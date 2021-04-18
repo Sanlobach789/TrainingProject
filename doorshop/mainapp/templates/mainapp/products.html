@@ -10,7 +10,7 @@
         <!-- ##### Single Widget ##### -->
         <div class="widget catagory mb-50">
             <!-- Widget Title -->
-            <h6 class="widget-title mb-30">Категории товаров</h6>
+            <h6 class="widget-title mb-30">КАТЕГОРИИ</h6>
 
             <!--  Catagories  -->
             <div class="catagories-menu">
@@ -23,26 +23,29 @@
             </div>
         </div>
 
-        <!-- ##### Single Widget ##### -->
-        <div class="widget brands mb-50">
-            {% for key, values in filters.items %}
-                <!-- ##### Single Widget ##### -->
-                <div class="widget brands mb-50">
-                    <h6 class="widget-title mb-30">{{ key }}</h6>
-                    <div class="widget-desc">
-                        {% for value in values %}
-                            <!-- Single Form Check -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="amado">
-                                <label class="form-check-label" for="amado">{{ value }}</label>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
 
-{% comment %}
+        <!-- ##### Single Widget ##### -->
+        {% if filters %}
+            <div class="widget brands mb-50">
+                <h6 class="widget-title mb-30">ФИЛЬТРЫ:</h6>
+                {% for key, values in filters.items %}
+                    <!-- ##### Single Widget ##### -->
+                    <div class="widget brands mb-50">
+                        <h6 class="widget-title mb-30">{{ key }}</h6>
+                        <div class="widget-desc">
+                            {% for value in values %}
+                                <!-- Single Form Check -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="amado">
+                                    <label class="form-check-label" for="amado">{{ value }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% comment %}
         <!-- ##### Single Widget ##### -->
         <div class="widget color mb-50">
             <!-- Widget Title -->
@@ -62,26 +65,27 @@
             </div>
         </div>
 {% endcomment %}
-        {% if filters %}
-        <!-- ##### Single Widget ##### -->
-        <div class="widget price mb-50">
-            <!-- Widget Title -->
-            <h6 class="widget-title mb-30">Цена</h6>
 
-            <div class="widget-desc">
-                <div class="slider-range">
-                    <div data-min="{{ price_filter.min }}" data-max="{{ price_filter.max }}"
-                         data-unit="₽"
-                         class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"
-                         data-value-min="{{ price_filter.min }}" data-value-max="{{ price_filter.max }}" data-label-result="">
-                        <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                        <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                        <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+            <!-- ##### Single Widget ##### -->
+            <div class="widget price mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Цена</h6>
+
+                <div class="widget-desc">
+                    <div class="slider-range">
+                        <div data-min="{{ price_filter.min }}" data-max="{{ price_filter.max }}"
+                             data-unit="₽"
+                             class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"
+                             data-value-min="{{ price_filter.min }}" data-value-max="{{ price_filter.max }}"
+                             data-label-result="">
+                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                        </div>
+                        <div class="range-price">₽{{ price_filter.min }} - ₽{{ price_filter.max }}</div>
                     </div>
-                    <div class="range-price">₽{{ price_filter.min }} - ₽{{ price_filter.max }}</div>
                 </div>
             </div>
-        </div>
         {% endif %}
     </div>
 {% endblock %}

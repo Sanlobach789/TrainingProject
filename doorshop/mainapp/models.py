@@ -17,15 +17,8 @@ class ProductCategory(models.Model):
 
 class ProductAttributes(models.Model):
 
-    class DataTypes(models.TextChoices):
-        TEXT = 'Текст'
-        INTEGER = 'Целое число'
-        DECIMAL = 'Число с запятой'
-
-    name = models.CharField(max_length=64, unique=True, verbose_name="Название*")
+    name = models.CharField(max_length=64, unique=False, verbose_name="Название*")
     category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, verbose_name="Категория*")
-    data_type = models.CharField(max_length=15, choices=DataTypes.choices,
-                                 default=DataTypes.TEXT, verbose_name="Тип данных*")
 
     def __str__(self):
         return f'{self.name}'
