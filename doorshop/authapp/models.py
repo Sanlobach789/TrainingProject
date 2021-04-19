@@ -9,15 +9,11 @@ from django.contrib.auth.models import AbstractUser
 class ShopUser(AbstractUser):
     avatar = models.ImageField(upload_to='users_avatars', blank=True)
     age = models.PositiveIntegerField(verbose_name = 'возраст', blank=True, default=18)
-    email = models.EmailField(_('e-mail'), unique=True)
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    username = models.EmailField(_('e-mail'), unique=True)
 
-    # @staticmethod
-    # def get_email(self):
-    #     return f'{self.email}'
-    #
-    # username = get_email
+    def save(self, *args, **kwargs):
+        self.email = self.username
+        super(ShopUser, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.first_name}'

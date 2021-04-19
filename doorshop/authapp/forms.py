@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, PasswordChangeForm, UsernameField
 from django.contrib.auth.forms import UserCreationForm
 from .models import ShopUser
 
@@ -7,7 +7,7 @@ from .models import ShopUser
 class ShopUserLoginForm(AuthenticationForm):
     class Meta:
         model = ShopUser
-        fields = ('email', 'password')
+        fields = ('username', 'password')
 
     def __init__(self, *args, **kwargs):
         super(ShopUserLoginForm, self).__init__(*args, **kwargs)
@@ -20,13 +20,17 @@ class ShopUserRegisterForm(UserCreationForm):
     class Meta:
 
         model = ShopUser
-        fields = ('email', 'first_name', 'password1', 'password2')
+        # username = forms.EmailField(max_length=64)
+        fields = ('username', 'first_name', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields['username'].label = 'Адрес почты'
         self.fields['first_name'].label = 'Ваше имя'
         self.fields['password1'].label = 'Пароль'
         self.fields['password2'].label = 'Подтвердите пароль'
+
         for field_name, field in self.fields.items():
 
             field.widget.attrs['class'] = 'form-control'

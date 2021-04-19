@@ -7,6 +7,7 @@ from mainapp.models import Product
 from basketapp.models import Basket
 
 
+@login_required
 def basket_main(request):
     basket = Basket.objects.filter(user=request.user)
     content = {

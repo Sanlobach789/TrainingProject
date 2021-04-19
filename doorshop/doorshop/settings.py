@@ -121,6 +121,8 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'authapp.ShopUser'
 
+LOGIN_URL = '/auth/login'
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (

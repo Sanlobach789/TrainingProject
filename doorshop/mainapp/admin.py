@@ -18,8 +18,7 @@ class ProductsAdmin(admin.ModelAdmin):
     inlines = [AttributesInline, ProductImageInLine, ]
 
 
-# admin.site.register(Product)
 admin.site.register(ProductCategory)
 admin.site.register(ProductMeasure)
 admin.site.register(ProductAttributes)
-# admin.site.register(AttributeValue)
+
