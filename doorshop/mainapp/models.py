@@ -12,13 +12,14 @@ class ProductCategory(models.Model):
         verbose_name_plural = 'Категории товаров'
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class ProductAttributes(models.Model):
 
     name = models.CharField(max_length=64, unique=False, verbose_name="Название*")
-    category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, verbose_name="Категория*")
+    category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE,
+                                    verbose_name="Категория*", related_name='category_attributes')
 
     class Meta:
         verbose_name_plural = 'Доступные атрибуты товаров'
