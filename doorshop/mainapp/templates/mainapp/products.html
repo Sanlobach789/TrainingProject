@@ -31,12 +31,12 @@
                 {% for key, values in filters.items %}
                     <!-- ##### Single Widget ##### -->
                     <div class="widget brands mb-50">
-                        <h6 class="widget-title mb-30">{{ key }}</h6>
+                        <h6 class="widget-title mb-30" name="filter-id-{{ key.id }}">{{ key }}</h6>
                         <div class="widget-desc">
                             {% for value in values %}
                                 <!-- Single Form Check -->
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="amado">
+                                    <input class="form-check-input" name="{{ value }}" type="checkbox" value="" id="amado">
                                     <label class="form-check-label" for="amado">{{ value }}</label>
                                 </div>
                             {% endfor %}
@@ -82,7 +82,9 @@
                             <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                             <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                         </div>
-                        <div class="range-price">₽{{ price_filter.min }} - ₽{{ price_filter.max }}</div>
+                        <div class="range-price">
+                            ₽<span class="filter_min_price">{{ price_filter.min }}</span> - ₽<span class="filter_max">{{ price_filter.max }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -149,7 +151,7 @@
                                 <!-- Product Meta Data -->
                                 <div class="product-meta-data">
                                     <div class="line"></div>
-                                    <p class="product-price">{{ product.price }}</p>
+                                    <p class="product-price">{{ product.price }}₽</p>
                                     <a href="{% url 'mainapp:product_detail' product.id %}">
                                         <h6>{{ product.name }}</h6>
                                     </a>
@@ -163,10 +165,11 @@
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </div>{% endcomment %}
-                                    <div class="cart">
-                                        <a href="{% url 'basket:basket_add' product.id %}" data-toggle="tooltip"
-                                           data-placement="left" title="Add to Cart"><img
-                                                src="/media/img/core-img/cart.png" alt=""></a>
+                                    <div class="cart cart_add">
+{#                                        <a href="{% url 'basket:basket_add' product.id %}" data-toggle="tooltip"#}
+{#                                           data-placement="left" title="Add to Cart">#}
+                                            <img src="/media/img/core-img/cart.png" name="{{ product.id }}" alt="">
+{#                                        </a>#}
                                     </div>
                                 </div>
                             </div>

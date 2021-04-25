@@ -22,9 +22,11 @@ def products(request):
 
 def product_detail(request, product_id):
     attribute_values = AttributeValue.objects.filter(product_id=product_id)
-    images = Product.objects.get(id=product_id).images.all()
+    product = Product.objects.get(id=product_id)
+    images = product.images.all()
     content = {
-        'product': Product.objects.get(id=product_id),
+        'title': product.name,
+        'product': product,
         'attributes': attribute_values,
         'product_images': images,
     }

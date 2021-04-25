@@ -7,12 +7,11 @@
 {% block content %}
     <div class="cart-table-area section-padding-100">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row cart_list">
                 <div class="col-12 col-lg-8">
                     <div class="cart-title mt-50">
                         <h2>Корзина</h2>
                     </div>
-
                     <div class="cart-table clearfix">
                         <table class="table table-responsive">
                             <thead>
@@ -25,7 +24,7 @@
                             </thead>
                             <tbody>
                             {% for item in basket %}
-                                <tr>
+                                <tr class="basket_list">
                                     <td class="cart_product_img">
                                         <a href="#"><img src="/media/{{ item.product.image }}" alt="Product"></a>
                                     </td>
@@ -39,15 +38,10 @@
                                         <div class="qty-btn d-flex">
                                             <p>Кол-во</p>
                                             <div class="quantity">
-                                            <span class="qty-minus"
-                                                  onclick="var effect = document.getElementById('{{ item.id }}'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i
-                                                    class="fa fa-minus" aria-hidden="true"></i></span>
-                                                <input type="number" class="qty-text" id="{{ item.id }}" step="1" min="1"
+                                                <input type="number" id="{{ item.id }}"
+                                                       min="0"
                                                        max="300"
-                                                       name="quantity" value="{{ item.quantity }}">
-                                                <span class="qty-plus"
-                                                      onclick="var effect = document.getElementById('{{ item.id }}'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i
-                                                        class="fa fa-plus" aria-hidden="true"></i></span>
+                                                       name="{{ item.id }}" value="{{ item.quantity }}">
                                             </div>
                                         </div>
                                     </td>
@@ -61,12 +55,12 @@
                     <div class="cart-summary">
                         <h5>КОРЗИНА</h5>
                         <ul class="summary-table">
-{#                            <li><span>Предварительная стоимость:</span> <span>$140.00</span></li>#}
-{#                            <li><span>Доставка:</span> <span>Free</span></li>#}
-                            <li><span>Итого:</span> <span>{{ basket.0.total_sum }}</span></li>
+                            {#                            <li><span>Предварительная стоимость:</span> <span>$140.00</span></li>#}
+                            {#                            <li><span>Доставка:</span> <span>Free</span></li>#}
+                            <li><span>Итого:</span> <span id="basket_total_sum">{{ basket.0.total_sum }}</span></li>
                         </ul>
                         <div class="cart-btn mt-100">
-                            <a href="{% url 'order:order_create' %}" class="btn amado-btn w-100">Checkout</a>
+                            <a href="{% url 'order:order_create' %}" class="btn amado-btn w-100">Оформить заказ</a>
                         </div>
                     </div>
                 </div>
@@ -74,4 +68,3 @@
         </div>
     </div>
 {% endblock %}
-

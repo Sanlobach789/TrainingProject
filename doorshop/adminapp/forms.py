@@ -2,7 +2,7 @@ from django import forms
 from authapp.models import ShopUser
 from authapp.forms import ShopUserEditForm
 
-from mainapp.models import ProductCategory
+from mainapp.models import ProductCategory, AttributeValue
 
 
 class ShopUserAdminEditForm(ShopUserEditForm):
