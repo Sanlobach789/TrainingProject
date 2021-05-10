@@ -1,5 +1,5 @@
 from django.forms import modelform_factory, modelformset_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -97,9 +97,9 @@ def simple_filter(attr_id, values, founded_products=None):
     else:
         for item in founded_products.values('product_id'):
             for val in values:
-                buffer = AttributeValue(
-                    attribite_id=attr_id,
-                    product_id=item['product_id'],
+                buffer = AttributeValue.objects.filter(
+                    attribute_id_id=attr_id,
+                    product_id_id=item['product_id'],
                     value=val
                 )
                 result = result | buffer
@@ -107,28 +107,44 @@ def simple_filter(attr_id, values, founded_products=None):
 
 
 def recurs_filter(filter_set, founded_products=None, counter=0):
-    if counter == len(filter_set):
-        founded_products = product_list_serializer(founded_products)
+    len_of_filters = len(filter_set)
+    if counter > len_of_filters:
+        # founded_products = product_list_serializer(founded_products)
         return founded_products
     else:
-        for key, values in filter_set:
+        for key, values in filter_set.items():
             if founded_products:
                 founded_products = simple_filter(attr_id=key, values=values, founded_products=founded_products)
-                filter_set.pop(key)
+                new_filter_set = filter_set.copy()
+                new_filter_set.pop(key)
                 counter += 1
-                recurs_filter(filter_set, founded_products, counter)
+                return recurs_filter(new_filter_set, founded_products, counter)
             else:
                 founded_products = simple_filter(attr_id=key, values=values)
-                filter_set.pop(key)
+                new_filter_set = filter_set.copy()
+                new_filter_set.pop(key)
                 counter += 1
-                recurs_filter(filter_set, founded_products, counter)
+                return recurs_filter(new_filter_set, founded_products, counter)
+
+
+def create_filterset(filter_dict):
+    filter_set = {}
+    for key, value in filter_dict:
+        correct_key = str.replace(key, '[]', '')
+        filter_set[correct_key] = value
+    return filter_set
 
 
 @csrf_exempt
 def filtered_list(request):
     if request.method == 'POST' and request.is_ajax():
         result = request.POST
-        print(result)
+        filter_dict = result.lists()
+        filter_set = create_filterset(filter_dict)
+        print(filter_set)
+        products = recurs_filter(filter_set=filter_set)
+        for items in products.values('product_id'):
+            print(items['product_id'])
         return HttpResponse('success')
     return HttpResponse('FAIL!!!!!')
 

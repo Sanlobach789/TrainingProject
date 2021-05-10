@@ -3,7 +3,7 @@ function getCheckedCheckBoxes() {
   let checkboxesChecked = {};
   for (let index = 0; index < checkboxes.length; index++) {
      if (checkboxes[index].checked) {
-         attrId = checkboxes[index].dataset.filterid;
+         attrId = parseInt(checkboxes[index].dataset.filterid);
          filterValue = checkboxes[index].dataset.value;
          if (checkboxesChecked[attrId]) {
              const buffer = checkboxesChecked[attrId];
