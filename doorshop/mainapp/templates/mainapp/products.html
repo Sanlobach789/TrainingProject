@@ -26,26 +26,29 @@
 
         <!-- ##### Single Widget ##### -->
         {% if filters %}
-            <div class="widget brands mb-50">
-                <h6 class="widget-title mb-30">ФИЛЬТРЫ:</h6>
-                {% for key, values in filters.items %}
-                    <!-- ##### Single Widget ##### -->
-                    <div class="widget brands mb-50">
-                        <h6 class="widget-title mb-30" name="filter-id-{{ key.id }}">{{ key }}</h6>
-                        <div class="widget-desc">
-                            {% for value in values %}
-                                <!-- Single Form Check -->
-                                <div class="form-check">
-                                    <input class="form-check-input" name="{{ value }}" type="checkbox" value="" id="amado">
-                                    <label class="form-check-label" for="amado">{{ value }}</label>
-                                </div>
-                            {% endfor %}
+            <form action="" method="post">
+                <div class="widget brands mb-50">
+                    <h6 class="widget-title mb-30">ФИЛЬТРЫ:</h6>
+                    {% for key, values in filters.items %}
+                        <!-- ##### Single Widget ##### -->
+                        <div class="widget brands mb-50 product_filters">
+                            <h6 class="widget-title mb-30 filter_name" name="filter-id-{{ key.id }}">{{ key }}</h6>
+                            <div class="widget-desc filter_values_container" data-filter="{{ key.id }}">
+                                {% for value in values %}
+                                    <!-- Single Form Check -->
+                                    <div class="form-check">
+                                        <input class="form-check-input filter_value checkbox" data-filterid="{{ key.id }}"
+                                               data-value="{{ value }}"
+                                               type="checkbox" value="" id="amado">
+                                        <label class="form-check-label" for="amado">{{ value }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
 
-            {% comment %}
+                {% comment %}
         <!-- ##### Single Widget ##### -->
         <div class="widget color mb-50">
             <!-- Widget Title -->
@@ -66,28 +69,31 @@
         </div>
 {% endcomment %}
 
-            <!-- ##### Single Widget ##### -->
-            <div class="widget price mb-50">
-                <!-- Widget Title -->
-                <h6 class="widget-title mb-30">Цена</h6>
+                <!-- ##### Single Widget ##### -->
+                <div class="widget price mb-50">
+                    <!-- Widget Title -->
+                    <h6 class="widget-title mb-30">Цена</h6>
 
-                <div class="widget-desc">
-                    <div class="slider-range">
-                        <div data-min="{{ price_filter.min }}" data-max="{{ price_filter.max }}"
-                             data-unit="₽"
-                             class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"
-                             data-value-min="{{ price_filter.min }}" data-value-max="{{ price_filter.max }}"
-                             data-label-result="">
-                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                        </div>
-                        <div class="range-price">
-                            ₽<span class="filter_min_price">{{ price_filter.min }}</span> - ₽<span class="filter_max">{{ price_filter.max }}</span>
+                    <div class="widget-desc">
+                        <div class="slider-range">
+                            <div data-min="{{ price_filter.min }}" data-max="{{ price_filter.max }}"
+                                 data-unit="₽"
+                                 class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"
+                                 data-value-min="{{ price_filter.min }}" data-value-max="{{ price_filter.max }}"
+                                 data-label-result="">
+                                <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                                <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                                <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                            </div>
+                            <div class="range-price">
+                                ₽<span class="filter_min_price">{{ price_filter.min }}</span> - ₽<span
+                                    class="filter_max">{{ price_filter.max }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <input class="filter-button" type="submit" value="ПРИМЕНИТЬ">
+            </form>
         {% endif %}
     </div>
 {% endblock %}
@@ -134,7 +140,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row products_area">
                 {% for product in products %}
                     <!-- Single Product Area -->
                     <div class="col-12 col-sm-6 col-md-12 col-xl-6">
@@ -166,10 +172,10 @@
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </div>{% endcomment %}
                                     <div class="cart cart_add">
-{#                                        <a href="{% url 'basket:basket_add' product.id %}" data-toggle="tooltip"#}
-{#                                           data-placement="left" title="Add to Cart">#}
-                                            <img src="/media/img/core-img/cart.png" name="{{ product.id }}" alt="">
-{#                                        </a>#}
+                                        {#                                        <a href="{% url 'basket:basket_add' product.id %}" data-toggle="tooltip"#}
+                                        {#                                           data-placement="left" title="Add to Cart">#}
+                                        <img src="/media/img/core-img/cart.png" name="{{ product.id }}" alt="">
+                                        {#                                        </a>#}
                                     </div>
                                 </div>
                             </div>

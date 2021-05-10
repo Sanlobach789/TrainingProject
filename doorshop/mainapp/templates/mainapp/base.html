@@ -191,6 +191,10 @@
 <script src="{% static 'js/active.js' %}"></script>
 <!-- Basket js -->
 <script src="{% static 'js/basket.js' %}"></script>
+<script>
+    let URL = "{% url 'mainapp:filter_products' %}";
+</script>
+<script src="{% static 'js/filters_js.js' %}"></script>
 
 {% block js %}
 

@@ -1,6 +1,11 @@
+from django.forms import modelform_factory, modelformset_factory
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
+from mainapp.forms import AttributeFormSet, AttributesForm
 from mainapp.models import ProductCategory, Product, AttributeValue, ProductAttributes
+from mainapp.serializers import product_list_serializer
 
 
 def main(request):
@@ -11,7 +16,6 @@ def main(request):
 
 
 def products(request):
-
     content = {
         'title': 'Doorshop - Товары',
         'categories': ProductCategory.objects.filter(is_active=True),
@@ -79,3 +83,57 @@ def category_products(request, category_id=None):
     }
 
     return render(request, 'mainapp/products.html', content)
+
+
+# filtered_products = FilteredProductList()
+
+def simple_filter(attr_id, values, founded_products=None):
+    result = AttributeValue.objects.none()
+    if not founded_products:
+        for val in values:
+            buffer = AttributeValue.objects.filter(attribute_id=attr_id, value=val)
+            result = result | buffer
+        return result
+    else:
+        for item in founded_products.values('product_id'):
+            for val in values:
+                buffer = AttributeValue(
+                    attribite_id=attr_id,
+                    product_id=item['product_id'],
+                    value=val
+                )
+                result = result | buffer
+        return result
+
+
+def recurs_filter(filter_set, founded_products=None, counter=0):
+    if counter == len(filter_set):
+        founded_products = product_list_serializer(founded_products)
+        return founded_products
+    else:
+        for key, values in filter_set:
+            if founded_products:
+                founded_products = simple_filter(attr_id=key, values=values, founded_products=founded_products)
+                filter_set.pop(key)
+                counter += 1
+                recurs_filter(filter_set, founded_products, counter)
+            else:
+                founded_products = simple_filter(attr_id=key, values=values)
+                filter_set.pop(key)
+                counter += 1
+                recurs_filter(filter_set, founded_products, counter)
+
+
+@csrf_exempt
+def filtered_list(request):
+    if request.method == 'POST' and request.is_ajax():
+        result = request.POST
+        print(result)
+        return HttpResponse('success')
+    return HttpResponse('FAIL!!!!!')
+
+# def clear_filters(request):
+#     if request.is_ajax():
+#         filtered_products.filter_set = {}
+#         filtered_products.founded_items = Product.objects.none()
+#     return JsonResponse(filtered_products.filter_set)
