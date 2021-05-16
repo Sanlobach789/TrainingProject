@@ -26,21 +26,30 @@
 
         <!-- ##### Single Widget ##### -->
         {% if filters %}
-            <form action="" method="post">
+            <form action="{% url 'mainapp:category_products' current_category %}" method="post">
+            {% csrf_token %}
                 <div class="widget brands mb-50">
                     <h6 class="widget-title mb-30">ФИЛЬТРЫ:</h6>
                     {% for key, values in filters.items %}
                         <!-- ##### Single Widget ##### -->
                         <div class="widget brands mb-50 product_filters">
-                            <h6 class="widget-title mb-30 filter_name" name="filter-id-{{ key.id }}">{{ key }}</h6>
-                            <div class="widget-desc filter_values_container" data-filter="{{ key.id }}">
+                            <h6 class="widget-title mb-30 filter_name">{{ key }}</h6>
+                            <div class="widget-desc filter_values_container">
                                 {% for value in values %}
                                     <!-- Single Form Check -->
                                     <div class="form-check">
-                                        <input class="form-check-input filter_value checkbox" data-filterid="{{ key.id }}"
-                                               data-value="{{ value }}"
-                                               type="checkbox" value="" id="amado">
-                                        <label class="form-check-label" for="amado">{{ value }}</label>
+                                        <input class="form-check-input filter_value checkbox"
+                                               type="checkbox" value="{{ value }}" id="{{ value }}"
+                                               name = "{{ key.id }}"
+                                                {% if filter_set %}
+                                                    {% for filter_id, value_list in filter_set.items %}
+                                                        {% if value in value_list %}
+                                               checked
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                        >
+                                        <label class="form-check-label" for="{{ value }}">{{ value }}</label>
                                     </div>
                                 {% endfor %}
                             </div>
@@ -74,23 +83,28 @@
                     <!-- Widget Title -->
                     <h6 class="widget-title mb-30">Цена</h6>
 
-                    <div class="widget-desc">
-                        <div class="slider-range">
-                            <div data-min="{{ price_filter.min }}" data-max="{{ price_filter.max }}"
-                                 data-unit="₽"
-                                 class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"
-                                 data-value-min="{{ price_filter.min }}" data-value-max="{{ price_filter.max }}"
-                                 data-label-result="">
-                                <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                                <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                            </div>
+{#                    <div class="widget-desc">#}
+{#                        <div class="slider-range">#}
+{#                            <div data-min="{{ price_filter.min }}" data-max="{{ price_filter.max }}"#}
+{#                                 data-unit="₽"#}
+{#                                 class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"#}
+{#                                 data-value-min="{{ price_filter.min }}" data-value-max="{{ price_filter.max }}"#}
+{#                                 data-label-result="">#}
+{#                                <div class="ui-slider-range ui-widget-header ui-corner-all"></div>#}
+{#                                <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>#}
+{#                                <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>#}
+{#                            </div>#}
                             <div class="range-price">
-                                ₽<span class="filter_min_price">{{ price_filter.min }}</span> - ₽<span
-                                    class="filter_max">{{ price_filter.max }}</span>
+                                <label class="form-check-label" for="min_price">
+                                <input type="number" class=""  name="min_price" min="{{ price_filter.min }}" max="{{ price_filter.max  }}" value="{{ price_filter.min }}">
+                                <br> Цена от ₽</label>
+
+                                <label class="form-check-label" for="max_price">
+                                    <input type="number" class="" name="max_price" min="{{ price_filter.min }}" max="{{ price_filter.max  }}" value="{{ price_filter.max }}">
+                               <br> Цена до ₽</label>
                             </div>
-                        </div>
-                    </div>
+{#                        </div>#}
+{#                    </div>#}
                 </div>
                 <input class="filter-button" type="submit" value="ПРИМЕНИТЬ">
             </form>
@@ -115,12 +129,12 @@
                         <!-- Sorting -->
                         <div class="product-sorting d-flex">
                             <div class="sort-by-date d-flex align-items-center mr-15">
-                                <p>Сортировать по</p>
+                                <p>Сортировать по </p>
                                 <form action="#" method="get">
                                     <select name="select" id="sortBydate">
-                                        <option value="value">₽ по возрастанию</option>
-                                        <option value="value">₽ по убыванию</option>
-                                        <option value="value">По наличию</option>
+                                        <option value="value"> ₽ по возрастанию</option>
+                                        <option value="value"> ₽ по убыванию</option>
+                                        <option value="value"> По наличию</option>
                                     </select>
                                 </form>
                             </div>
@@ -200,3 +214,12 @@
         </div>
     </div>
 {% endblock %}
+
+{#{% if filters %}#}
+{#    {% block js %}#}
+{#        <script>#}
+{#            let URL = "{% url 'mainapp:category_products' 2 %}";#}
+{#        </script>#}
+{#        <script src="{% static 'js/filters_js.js' %}"></script>#}
+{#    {% endblock %}#}
+{#{% endif %}#}

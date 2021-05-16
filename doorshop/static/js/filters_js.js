@@ -24,15 +24,11 @@ $( document ).ready(function() {
         result = filterSet
 
         $.post(URL, result, function (response) {
-            if(response == 'success'){ console.log(response); }
+            if(response){
+                let page = $('html')
+                page.html(response)
+            }
             else{ alert('Error! :('); }
         })
-        // $.ajax({
-        //     url: "/products/filters/" + filter_id + "/" + filter_value + "/" + action + "/",
-        //
-        //     success: function (data) {
-        //         console.log(data.result)
-        //     }
-        // });
     })
 });

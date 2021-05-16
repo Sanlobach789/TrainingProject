@@ -35,8 +35,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="search-content">
-                    <form action="#" method="get">
-                        <input type="search" name="search" id="search" placeholder="Type your keyword...">
+                    <form action="{% url 'mainapp:index' %}" method="get">
+                        <input type="search" name="search" id="search" placeholder="Введите название товара">
                         <button type="submit"><img src="/media/img/core-img/search.png" alt=""></button>
                     </form>
                 </div>
@@ -102,6 +102,7 @@
                     Войти в профиль
                 </a>
             {% endif %}
+
             <a href="#" class="search-nav"><img src="/media/img/core-img/search.png" alt=""> Поиск</a>
         </div>
         <!-- Social Button -->
@@ -191,10 +192,6 @@
 <script src="{% static 'js/active.js' %}"></script>
 <!-- Basket js -->
 <script src="{% static 'js/basket.js' %}"></script>
-<script>
-    let URL = "{% url 'mainapp:filter_products' %}";
-</script>
-<script src="{% static 'js/filters_js.js' %}"></script>
 
 {% block js %}
 

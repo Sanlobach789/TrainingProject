@@ -1,6 +1,7 @@
 from django.forms import modelform_factory, modelformset_factory
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 
 from mainapp.forms import AttributeFormSet, AttributesForm
@@ -15,11 +16,19 @@ def main(request):
     return render(request, 'mainapp/index.html', content)
 
 
-def products(request):
+def products_index(request):
+    try:
+        data = request.GET['search']
+        items = Product.objects.filter(name__contains=data.title())
+        items = items | Product.objects.filter(name__contains=data.lower())
+        product_list = items
+    except MultiValueDictKeyError:
+        product_list = Product.objects.filter(is_active=True)
+
     content = {
         'title': 'Doorshop - Товары',
         'categories': ProductCategory.objects.filter(is_active=True),
-        'products': Product.objects.filter(is_active=True),
+        'products': product_list
     }
     return render(request, 'mainapp/products.html', content)
 
@@ -60,12 +69,11 @@ def get_category_attributes(category_id=None):
     return None
 
 
-def category_products(request, category_id=None):
-    products_list = Product.objects.filter(is_active=True, category=category_id)
-    filter_values = get_category_attributes(category_id)
-    if len(products_list) > 1:
-        min_price_product = products_list.order_by('price')[0],
-        max_price_product = products_list.order_by('-price')[0],
+# Функционал фильтрации_________________________________________________
+def get_price_filter(product_list):
+    if len(product_list) > 1:
+        min_price_product = product_list.order_by('price')[0],
+        max_price_product = product_list.order_by('-price')[0],
         min = float(min_price_product[0].get_price())
         max = float(max_price_product[0].get_price())
         price_filter = {
@@ -74,18 +82,9 @@ def category_products(request, category_id=None):
         }
     else:
         price_filter = None
-    content = {
-        'title': ProductCategory.objects.get(id=category_id).name,
-        'categories': ProductCategory.objects.filter(is_active=True),
-        'products': products_list,
-        'price_filter': price_filter,
-        'filters': filter_values,
-    }
 
-    return render(request, 'mainapp/products.html', content)
+    return price_filter
 
-
-# filtered_products = FilteredProductList()
 
 def simple_filter(attr_id, values, founded_products=None):
     result = AttributeValue.objects.none()
@@ -129,27 +128,79 @@ def recurs_filter(filter_set, founded_products=None, counter=0):
 
 def create_filterset(filter_dict):
     filter_set = {}
+    price_set = {}
     for key, value in filter_dict:
-        correct_key = str.replace(key, '[]', '')
-        filter_set[correct_key] = value
-    return filter_set
+        if key.isdigit():
+            filter_set[key] = value
+        elif key == 'min_price':
+            price_set['min'] = int(value[0])
+        elif key == 'max_price':
+            price_set['max'] = int(value[0])
+    return {'attribute_filter': filter_set, 'price_filter': price_set}
 
 
-@csrf_exempt
+def price_filtered_products(product_list, price_range):
+    min_price = price_range['min']
+    print(min_price)
+    max_price = price_range['max']
+    print(max_price)
+    price_filtered = Product.objects.filter(id__in=product_list, price__in=(min_price, max_price))
+    print(price_filtered)
+    return price_filtered
+
+
 def filtered_list(request):
-    if request.method == 'POST' and request.is_ajax():
-        result = request.POST
-        filter_dict = result.lists()
-        filter_set = create_filterset(filter_dict)
-        print(filter_set)
-        products = recurs_filter(filter_set=filter_set)
-        for items in products.values('product_id'):
-            print(items['product_id'])
-        return HttpResponse('success')
-    return HttpResponse('FAIL!!!!!')
+    result = request.POST
+    filtered_by_attrs = []
+    filter_dict = result.lists()
+    filter_set = create_filterset(filter_dict)
 
-# def clear_filters(request):
-#     if request.is_ajax():
-#         filtered_products.filter_set = {}
-#         filtered_products.founded_items = Product.objects.none()
-#     return JsonResponse(filtered_products.filter_set)
+    if filter_set['attribute_filter'] == {}:
+        url = request.META['HTTP_REFERER']
+        category = int(url.split('/')[4])
+        products = AttributeValue.objects.filter(product_id__category__id=category, product_id__is_active=True)
+
+    else:
+        products = recurs_filter(filter_set=filter_set['attribute_filter'])
+
+    for item in products.values('product_id'):
+        filtered_by_attrs.append(item['product_id'])
+    price_filtered = price_filtered_products(filtered_by_attrs, filter_set['price_filter'])
+
+    return {'product_list': price_filtered, 'attr_filters': filter_set['attribute_filter'],
+            'price_filter': filter_set['price_filter']}
+
+
+# ________________________________________________________________________
+
+
+def category_products(request, category_id=None):
+    if request.method == 'POST':
+        filtered_products = filtered_list(request)
+        filter_set = filtered_products['attr_filters']
+        price_filters = filtered_products['price_filter']
+        products_list = Product.objects.filter(id__in=filtered_products['product_list'], is_active=True)
+    else:
+        products_list = Product.objects.filter(is_active=True, category=category_id)
+        price_filters = get_price_filter(products_list)
+        filter_set = {}
+
+    filter_values = get_category_attributes(category_id)
+    content = {
+        'title': ProductCategory.objects.get(id=category_id).name,
+        'categories': ProductCategory.objects.filter(is_active=True),
+        'products': products_list,
+        'price_filter': price_filters,
+        'filters': filter_values,
+        'filter_set': filter_set,
+        'current_category': category_id,
+    }
+    return render(request, 'mainapp/products.html', content)
+
+
+# def search_items(request):
+#     data = request.GET['search']
+#     items = Product.objects.filter(name__contains=data.title())
+#     items = items | Product.objects.filter(name__contains=data.lower())
+#     print(items)
+#     return HttpResponse('success')
