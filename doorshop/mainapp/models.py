@@ -82,7 +82,7 @@ class Product(models.Model):
 class AttributeValue(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     attribute_id = models.ForeignKey(ProductAttributes, on_delete=models.CASCADE, verbose_name="Атрибут")
-    value = models.CharField(max_length=40, blank=True, verbose_name="Значение")
+    value = models.CharField(max_length=40, verbose_name="Значение")
 
     class Meta:
         verbose_name_plural = 'Атрибуты товаров'
