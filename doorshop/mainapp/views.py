@@ -5,7 +5,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 
 from mainapp.forms import AttributeFormSet, AttributesForm
-from mainapp.models import ProductCategory, Product, AttributeValue, ProductAttributes
+from mainapp.models import ProductCategory, Product, AttributeValue, ProductAttributes, SortValues
 from mainapp.serializers import product_list_serializer
 
 
@@ -16,6 +16,14 @@ def main(request):
     return render(request, 'mainapp/index.html', content)
 
 
+def sort_func(request):
+    try:
+        data = request.GET['sort_select']
+        return data
+    except MultiValueDictKeyError:
+        return None
+
+
 def products_index(request):
     try:
         data = request.GET['search']
@@ -24,11 +32,22 @@ def products_index(request):
         product_list = items
     except MultiValueDictKeyError:
         product_list = Product.objects.filter(is_active=True)
+    sort_value = sort_func(request)
+
+    if sort_value is not None:
+        product_list = product_list.order_by(sort_value)
+        first_val = SortValues.objects.get(value=sort_value)
+        sort_values = SortValues.objects.exclude(name=first_val.name)
+    else:
+        sort_values = SortValues.objects.all()
+        first_val = None
 
     content = {
         'title': 'Doorshop - Товары',
         'categories': ProductCategory.objects.filter(is_active=True),
-        'products': product_list
+        'products': product_list,
+        'sort_values': sort_values,
+        'first_val': first_val
     }
     return render(request, 'mainapp/products.html', content)
 
@@ -169,8 +188,6 @@ def filtered_list(request):
 
     return {'product_list': price_filtered, 'attr_filters': filter_set['attribute_filter'],
             'price_filter': filter_set['price_filter']}
-
-
 # ________________________________________________________________________
 
 
@@ -196,11 +213,3 @@ def category_products(request, category_id=None):
         'current_category': category_id,
     }
     return render(request, 'mainapp/products.html', content)
-
-
-# def search_items(request):
-#     data = request.GET['search']
-#     items = Product.objects.filter(name__contains=data.title())
-#     items = items | Product.objects.filter(name__contains=data.lower())
-#     print(items)
-#     return HttpResponse('success')

@@ -6,7 +6,7 @@
     // :: 1.0 Masonary Gallery Active Code
 
     var proCata = $('.amado-pro-catagory');
-    var singleProCata = ".single-products-catagory";
+    var singleProCata = ".single-products-category";
 
     if ($.fn.imagesLoaded) {
         proCata.imagesLoaded(function () {

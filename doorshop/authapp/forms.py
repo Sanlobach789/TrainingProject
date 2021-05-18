@@ -26,7 +26,7 @@ class ShopUserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['username'].label = 'Адрес почты'
+        self.fields['username'].label = 'E-mail'
         self.fields['first_name'].label = 'Ваше имя'
         self.fields['password1'].label = 'Пароль'
         self.fields['password2'].label = 'Подтвердите пароль'

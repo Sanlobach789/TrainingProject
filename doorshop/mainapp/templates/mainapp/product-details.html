@@ -31,11 +31,11 @@
                                     {% for image in product_images %}
                                         {% if image == product_images.first %}
                                             <li class="active" data-target="#product_details_slider"
-                                                data-slide-to="{{ image.id }}"
+                                                data-slide-to="{{ forloop.counter0 }}"
                                                 style="background-image: url(/media/{{ image.image }});">
                                             </li>
                                         {% else %}
-                                            <li data-target="#product_details_slider" data-slide-to="{{ image.id }}"
+                                            <li data-target="#product_details_slider" data-slide-to="{{ forloop.counter0 }}"
                                                 style="background-image: url(/media/{{ image.image }});">
                                             </li>
                                         {% endif %}

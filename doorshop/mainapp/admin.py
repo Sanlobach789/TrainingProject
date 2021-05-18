@@ -1,20 +1,11 @@
 from django.contrib import admin
-from django.forms import BaseInlineFormSet
 
-from .models import ProductCategory, Product, ProductMeasure, ProductAttributes, AttributeValue, ProductImage
-
-
-# class AttributesInlineFormSet(BaseInlineFormSet):
-#
-#     def __init__(self, *args, **kwargs):
-#         super(AttributesInlineFormSet, self).__init__(*args, **kwargs)
-#         # Now we need to make a queryset to each field of each form inline
-#         self.queryset = AttributeValue.get_category_attributes(self.instance.id)
+from .models import ProductCategory, Product, ProductMeasure, ProductAttributes, AttributeValue, ProductImage, \
+    SortValues
 
 
 class ProductAttributesInLine(admin.StackedInline):
     model = AttributeValue
-    # formset = AttributesInlineFormSet
     extra = 0
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -34,7 +25,11 @@ class ProductsAdmin(admin.ModelAdmin):
     inlines = [ProductAttributesInLine, ProductImageInLine, ]
 
 
+@admin.register(ProductAttributes)
+class AttributesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category_id')
+
+
 admin.site.register(ProductCategory)
 admin.site.register(ProductMeasure)
-admin.site.register(ProductAttributes)
-
+admin.site.register(SortValues)
