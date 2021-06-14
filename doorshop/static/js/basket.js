@@ -24,10 +24,16 @@ window.onload = function () {
         let t_href = event.target;
         if (t_href) {
             $.ajax({
-                url: "/basket/add-to-cart/" + t_href.name + "/",
+                url: "/basket/add-to-cart/" + t_href.id + "/",
 
                 success: function (data) {
-                    $('.cart_total_quantity').html("(" + data.result.total_quantity + ")");
+                    if (data.result) {
+                        $('.cart_total_quantity').html("(" + data.result.total_quantity + ")");
+                    }
+                    else {
+                        window.location.href = "/auth/login"
+                    }
+
                 },
             });
         }

@@ -35,7 +35,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="search-content">
-                    <form action="{% url 'mainapp:index' %}" method="get">
+                    <form action="{% url 'products:index' %}" method="get">
                         <input type="search" name="search" id="search" placeholder="Введите название товара">
                         <button type="submit"><img src="/media/img/core-img/search.png" alt=""></button>
                     </form>
@@ -75,7 +75,7 @@
         <nav class="amado-nav">
             <ul>
                 <li><a href="{% url 'index' %}">Главная</a></li>
-                <li><a href="{% url 'mainapp:index' %}">Товары</a></li>
+                <li><a href="{% url 'products:index' %}">Товары</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'ordersapp:orders_list' %}">Заказы</a></li>
                 {% endif %}
@@ -107,10 +107,10 @@
         </div>
         <!-- Social Button -->
         <div class="social-info d-flex justify-content-between">
-            <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
-            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-            <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-            <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+            <a href="{{ links.instagram }}"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+            <a href="{{ links.VK }}"><i class="fa fa-vk" aria-hidden="true"></i></a>
+            <a href="{{ links.Telegram }}"><i class="fa fa-telegram" aria-hidden="true"></i></a>
+            <a href="{{ links.Whatsapp }}"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
         </div>
     </header>
     <!-- Header Area End -->

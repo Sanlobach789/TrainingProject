@@ -31,6 +31,7 @@ class ProductAttributes(models.Model):
     class Meta:
         verbose_name_plural = 'Доступные атрибуты товаров'
 
+    @staticmethod
     def category_attributes(category_id):
         return ProductAttributes.objects.filter(category_id=category_id)
 
@@ -68,6 +69,9 @@ class Product(models.Model):
 
     def get_price(self):
         return f'{self.price}'
+
+    def get_remainder(self):
+        return f'{self.quantity}'
 
     def save(self, *args, **kwargs):
         super().save()
@@ -113,3 +117,26 @@ class SortValues(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class SocialUrls(models.Model):
+    WHATSAPP = 'Whatsapp'
+    TELEGRAM = 'Telegram'
+    INSTAGRAM = 'instagram'
+    VK = 'VK'
+
+    SOCIAL_CHOICES = {
+        (WHATSAPP, 'Whatsapp'),
+        (TELEGRAM, 'Telegram'),
+        (INSTAGRAM, 'instagram'),
+        (VK, 'VK'),
+    }
+
+    name = models.CharField(max_length=10, choices=SOCIAL_CHOICES, verbose_name='Соц. сеть')
+    url_path = models.TextField(blank=True, verbose_name='Ссылка')
+
+    class Meta:
+        verbose_name_plural = 'Ссылки на соц сети'
+
+    def __str__(self):
+        return f'{self.url_path}'

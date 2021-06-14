@@ -24,32 +24,32 @@ def sort_func(request):
         return None
 
 
-def products_index(request):
-    try:
-        data = request.GET['search']
-        items = Product.objects.filter(name__contains=data.title())
-        items = items | Product.objects.filter(name__contains=data.lower())
-        product_list = items
-    except MultiValueDictKeyError:
-        product_list = Product.objects.filter(is_active=True)
-    sort_value = sort_func(request)
-
-    if sort_value is not None:
-        product_list = product_list.order_by(sort_value)
-        first_val = SortValues.objects.get(value=sort_value)
-        sort_values = SortValues.objects.exclude(name=first_val.name)
-    else:
-        sort_values = SortValues.objects.all()
-        first_val = None
-
-    content = {
-        'title': 'Doorshop - Товары',
-        'categories': ProductCategory.objects.filter(is_active=True),
-        'products': product_list,
-        'sort_values': sort_values,
-        'first_val': first_val
-    }
-    return render(request, 'mainapp/products.html', content)
+# def products_index(request):
+#     try:
+#         data = request.GET['search']
+#         items = Product.objects.filter(name__contains=data.title())
+#         items = items | Product.objects.filter(name__contains=data.lower())
+#         product_list = items
+#     except MultiValueDictKeyError:
+#         product_list = Product.objects.filter(is_active=True)
+#     sort_value = sort_func(request)
+#
+#     if sort_value is not None:
+#         product_list = product_list.order_by(sort_value)
+#         first_val = SortValues.objects.get(value=sort_value)
+#         sort_values = SortValues.objects.exclude(name=first_val.name)
+#     else:
+#         sort_values = SortValues.objects.all()
+#         first_val = None
+#
+#     content = {
+#         'title': 'Doorshop - Товары',
+#         'categories': ProductCategory.objects.filter(is_active=True),
+#         'products': product_list,
+#         'sort_values': sort_values,
+#         'first_val': first_val
+#     }
+#     return render(request, 'mainapp/products.html', content)
 
 
 def product_detail(request, product_id):
@@ -127,7 +127,6 @@ def simple_filter(attr_id, values, founded_products=None):
 def recurs_filter(filter_set, founded_products=None, counter=0):
     len_of_filters = len(filter_set)
     if counter > len_of_filters:
-        # founded_products = product_list_serializer(founded_products)
         return founded_products
     else:
         for key, values in filter_set.items():
@@ -155,7 +154,9 @@ def create_filterset(filter_dict):
             price_set['min'] = int(value[0])
         elif key == 'max_price':
             price_set['max'] = int(value[0])
-    return {'attribute_filter': filter_set, 'price_filter': price_set}
+        elif key == 'sort_select':
+            sort_val = value[0]
+    return {'attribute_filter': filter_set, 'price_filter': price_set, 'sort_val': sort_val}
 
 
 def price_filtered_products(product_list, price_range):
@@ -187,29 +188,60 @@ def filtered_list(request):
     price_filtered = price_filtered_products(filtered_by_attrs, filter_set['price_filter'])
 
     return {'product_list': price_filtered, 'attr_filters': filter_set['attribute_filter'],
-            'price_filter': filter_set['price_filter']}
+            'price_filter': filter_set['price_filter'], 'sort_value': filter_set['sort_val']}
 # ________________________________________________________________________
 
 
-def category_products(request, category_id=None):
+def products(request, category_id=None):
+    # ПОИСК______________________________________
+    try:
+        data = request.GET['search']
+        items = Product.objects.filter(name__contains=data.title())
+        items = items | Product.objects.filter(name__contains=data.lower())
+        product_list = items
+        title = 'Поиск товаров'
+    # Стандартный вывод_________________________________________
+    except MultiValueDictKeyError:
+        if not category_id:
+            product_list = Product.objects.filter(is_active=True).order_by('-quantity')
+            title = 'Каталог'
+        else:
+            product_list = Product.objects.filter(is_active=True, category=category_id).order_by('-quantity')
+            title = ProductCategory.objects.get(id=category_id).name
+
+    # ФИЛЬТРЫ ТОВАРОВ_________________________________________
     if request.method == 'POST':
         filtered_products = filtered_list(request)
         filter_set = filtered_products['attr_filters']
         price_filters = filtered_products['price_filter']
-        products_list = Product.objects.filter(id__in=filtered_products['product_list'], is_active=True)
+        sort_value = filtered_products['sort_value']
+        product_list = Product.objects.filter(id__in=filtered_products['product_list'], is_active=True).order_by(sort_value)
     else:
-        products_list = Product.objects.filter(is_active=True, category=category_id)
-        price_filters = get_price_filter(products_list)
+        price_filters = get_price_filter(product_list)
+        sort_value = None
         filter_set = {}
 
+    # СОРТИРОВКА_______________________________________
+
+    if sort_value is not None:
+        product_list = product_list.order_by(sort_value)
+        first_val = SortValues.objects.get(value=sort_value)
+        sort_values = SortValues.objects.exclude(name=first_val.name)
+    else:
+        sort_values = SortValues.objects.all()
+        first_val = None
     filter_values = get_category_attributes(category_id)
+
+    # Передача в контекст_____________________________________
     content = {
-        'title': ProductCategory.objects.get(id=category_id).name,
+        'title': title,
         'categories': ProductCategory.objects.filter(is_active=True),
-        'products': products_list,
+        'products': product_list,
         'price_filter': price_filters,
         'filters': filter_values,
         'filter_set': filter_set,
         'current_category': category_id,
+        'sort_values': sort_values,
+        'first_val': first_val
     }
     return render(request, 'mainapp/products.html', content)

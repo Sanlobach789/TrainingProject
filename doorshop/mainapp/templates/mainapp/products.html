@@ -1,9 +1,11 @@
 {% extends 'mainapp/base.html' %}
 {% load static %}
 
+
 {% block title %}
     <title>{{ title }}</title>
 {% endblock %}
+
 {% block filter %}
     <div class="shop_sidebar_area">
 
@@ -17,17 +19,29 @@
                 <ul>
                     {#                        <li class="active"><a href="#">Chairs</a></li>#}
                     {% for category in categories %}
-                        <li><a href="{% url 'mainapp:category_products' category.id %}">{{ category.name }}</a></li>
+                        <li><a href="{% url 'products:products' category.id %}">{{ category.name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
 
-
         <!-- ##### Single Widget ##### -->
         {% if filters %}
-            <form action="{% url 'mainapp:category_products' current_category %}" method="post">
+            <form action="{% url 'products:products' current_category %}" method="post">
                 {% csrf_token %}
+                <div class="product-sorting d-flex mb-30">
+                    <div class="sort-by-date">
+                        <p>Сортировать по </p>
+                        <select class="sort_by_select" name="sort_select" id="sortBydate">
+                            {% if first_val %}
+                                <option value="{{ first_val.value }}">{{ first_val.name }}</option>
+                            {% endif %}
+                            {% for item in sort_values %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
                 <div class="widget brands mb-50">
                     <h6 class="widget-title mb-30">ФИЛЬТРЫ:</h6>
                     {% for key, values in filters.items %}
@@ -95,13 +109,14 @@
                     {#                                <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>#}
                     {#                            </div>#}
                     <div class="range-price">
-                        <label class="form-check-label" for="min_price">
-                            <input type="number" class="" name="min_price" min="{{ price_filter.min }}"
+
+                        <label class="form-check-label filter-price-label mb-15" for="min_price">
+                            <input type="number" class="filter-price-input" name="min_price" min="{{ price_filter.min }}"
                                    max="{{ price_filter.max }}" value="{{ price_filter.min }}">
                             <br> Цена от ₽</label>
 
-                        <label class="form-check-label" for="max_price">
-                            <input type="number" class="" name="max_price" min="{{ price_filter.min }}"
+                        <label class="form-check-label filter-price-label" for="max_price">
+                            <input type="number" class="filter-price-input" name="max_price" min="{{ price_filter.min }}"
                                    max="{{ price_filter.max }}" value="{{ price_filter.max }}">
                             <br> Цена до ₽</label>
                     </div>
@@ -129,32 +144,32 @@
                             </div>{% endcomment %}
                         </div>
                         <!-- Sorting -->
-                        <div class="product-sorting d-flex">
-                            <div class="sort-by-date d-flex align-items-center mr-15">
-                                <p>Сортировать по </p>
-                                <form action="{% url 'mainapp:index' %}" method="get">
-                                    <select class="sort_by_select" name="sort_select" id="sortBydate">
-                                        {% if first_val %}
-                                            <option value="{{ first_val.value }}">{{ first_val.name }}</option>
-                                        {% endif %}
-                                        {% for item in sort_values %}
-                                            <option value="{{ item.value }}">{{ item.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </form>
-                            </div>
-                            {% comment %}<div class="view-product d-flex align-items-center">
-                                <p>View</p>
-                                <form action="#" method="get">
-                                    <select name="select" id="viewProduct">
-                                        <option value="value">12</option>
-                                        <option value="value">24</option>
-                                        <option value="value">48</option>
-                                        <option value="value">96</option>
-                                    </select>
-                                </form>
-                            </div>{% endcomment %}
-                        </div>
+{#                        <div class="product-sorting d-flex">#}
+{#                            <div class="sort-by-date d-flex align-items-center mr-15">#}
+{#                                <p>Сортировать по </p>#}
+{#                                <form action="{% url 'mainapp:index' %}" method="get">#}
+{#                                    <select class="sort_by_select" name="sort_select" id="sortBydate">#}
+{#                                        {% if first_val %}#}
+{#                                            <option value="{{ first_val.value }}">{{ first_val.name }}</option>#}
+{#                                        {% endif %}#}
+{#                                        {% for item in sort_values %}#}
+{#                                            <option value="{{ item.value }}">{{ item.name }}</option>#}
+{#                                        {% endfor %}#}
+{#                                    </select>#}
+{#                                </form>#}
+{#                            </div>#}
+{#                            {% comment %}<div class="view-product d-flex align-items-center">#}
+{#                                <p>View</p>#}
+{#                                <form action="#" method="get">#}
+{#                                    <select name="select" id="viewProduct">#}
+{#                                        <option value="value">12</option>#}
+{#                                        <option value="value">24</option>#}
+{#                                        <option value="value">48</option>#}
+{#                                        <option value="value">96</option>#}
+{#                                    </select>#}
+{#                                </form>#}
+{#                            </div>{% endcomment %}#}
+{#                        </div>#}
                     </div>
                 </div>
             </div>
@@ -179,6 +194,8 @@
                                     <p class="product-price">{{ product.price }}₽</p>
                                     <a href="{% url 'mainapp:product_detail' product.id %}">
                                         <h6>{{ product.name }}</h6>
+                                        <h6>(В наличие: {{ product.quantity }} шт
+                                            )</h6>
                                     </a>
                                 </div>
                                 <!-- Ratings & Cart -->
@@ -191,10 +208,10 @@
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </div>{% endcomment %}
                                     <div class="cart cart_add">
-                                        {#                                        <a href="{% url 'basket:basket_add' product.id %}" data-toggle="tooltip"#}
-                                        {#                                           data-placement="left" title="Add to Cart">#}
-                                        <img src="/media/img/core-img/cart.png" name="{{ product.id }}" alt="">
-                                        {#                                        </a>#}
+                                        <a href="" data-toggle="tooltip"
+                                           data-placement="left" title="Add to Cart">
+                                            <img src="/media/img/core-img/cart.png" id="{{ product.id }}" alt="">
+                                        </a>
                                     </div>
                                 </div>
                             </div>

@@ -39,6 +39,7 @@ def basket_add_ajax(request, id=None):
     if request.is_ajax():
         product = get_object_or_404(Product, id=int(id))
         baskets = Basket.objects.filter(user=request.user, product=product)
+        product_remainder = product.get_remainder()
 
         if not baskets.exists():
             basket = Basket(user=request.user, product=product)
@@ -49,7 +50,7 @@ def basket_add_ajax(request, id=None):
             basket.quantity += 1
             basket.save()
 
-        result = {'total_quantity': basket.total_quantity()}
+        result = {'total_quantity': basket.total_quantity(), 'remainder': product_remainder}
         return JsonResponse({'result': result})
 
 

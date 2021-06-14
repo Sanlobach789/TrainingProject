@@ -28,3 +28,7 @@ class Basket(models.Model):
     def get_items(self):
         baskets = Basket.objects.filter(user=self)
         return baskets
+
+    @staticmethod
+    def get_item(pk):
+        return Basket.objects.get(id=pk)
